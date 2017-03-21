@@ -1,1 +1,1 @@
-web: python EloRatings.py -f gamelog_no_hayden.txt -g
+web: python EloRatings.py
