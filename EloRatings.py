@@ -5,8 +5,7 @@ from pandas import DataFrame
 from argparse import ArgumentParser
 #from tabulate import tabulate
 #import json
-
-
+from flask import Flask
 
 class Player:
     def __init__(self, name, rating):
@@ -210,17 +209,21 @@ def sendMessage(message, botID="9fa5d231a19c02ec0c55e322a3"):
     send = requests.post("https://api.groupme.com/v3/bots/post", json=data)
     return send
 
-def main():
+def main(G, FI):
     global K
-    global fileImport
     global startRating
     global matchResult
-    global toSend
+    global fileImport
     global toGet
     global html
     html = False
 
-    setupParser()
+    #setupParser()
+    K = 75
+    startRating = 1000
+    matchResult = ""
+    toGet = G
+    fileImport = "gamelogs/" + FI
 
     if fileImport is not "":
         players = readMatchesFromFile()
@@ -277,10 +280,20 @@ def main():
 
     out = calculateOutliers(players)
 
+    toSend = False
     message = "" + df.to_string(header=False) + "\n\n" + out
     # print message
     if toSend:
         sendMessage(message)
 
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    main(True, "gamelog_no_hayden.txt")
+    return 'The score bot is active'
+
 if __name__ == '__main__':
-    main()
+    app.run(debug=True, host='0.0.0.0')
+
+
