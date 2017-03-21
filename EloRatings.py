@@ -217,6 +217,8 @@ def main():
     global matchResult
     global toSend
     global toGet
+    global html
+    html = False
 
     setupParser()
 
@@ -268,10 +270,10 @@ def main():
     d = [[p.name, "(" + str(p.wins) + ", " + str(p.losses) + ")", int(round(p.rating))] for p in players]
     df = DataFrame(data=d, columns=["Name", "Record", "Rating"],
                    index=["#" + str(i + 1) + ". " for i in range(len(players))])
-
-    f = open("score.html", mode='w')
-    f.write(df.style.render())
-    f.close()
+    if(html):
+        f = open("score.html", mode='w')
+        f.write(df.style.render())
+        f.close()
 
     out = calculateOutliers(players)
 
