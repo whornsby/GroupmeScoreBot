@@ -3,8 +3,8 @@ import numpy as np
 import requests
 from pandas import DataFrame
 from argparse import ArgumentParser
-from tabulate import tabulate
-import json
+#from tabulate import tabulate
+#import json
 
 
 
