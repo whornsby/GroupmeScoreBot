@@ -243,7 +243,7 @@ def main():
                 sendMessage(winner.name + "->" + str(int(round(winner.rating)))+"\n"+loser.name + "->" + str(int(round(loser.rating))))
             except IndexError:
                 print sendMessage("Your command is in the wrong format.\nTry \n>\"$match [winner] defeats [loser]\".")
-        elif string[0] == ">score":
+        elif string[0] == "$score":
             players.sort()
             d = [[p.name, "(" + str(p.wins) + ", " + str(p.losses) + ")", int(round(p.rating))] for p in players]
             df = DataFrame(data=d, columns=["Name", "Record", "Rating"],
@@ -253,8 +253,8 @@ def main():
             # print message
             sendMessage(message)
         else:
-            print string
-            print "No dice."
+            #print string
+            print "No command in most recent message."
 
     elif matchResult is not None:
         #-g and -m should never be used together. Same funtionality for different use cases
