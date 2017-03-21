@@ -33,7 +33,7 @@ class Player:
         other.versus[self.name] = (other.versus.get(self.name, (0, 0))[0], other.versus.get(self.name, (0, 0))[1] + 1)
 
         if fileImport == "":
-            log = open("old_gamelog.txt", mode="a")
+            log = open("gamelogs/old_gamelog.txt", mode="a")
             log.write(self.name + " defeats " + other.name + "\n")
             log.close()
 
@@ -61,7 +61,7 @@ def calculateOutliers(players):
 
 
 def clearLog():
-    log = open("old_gamelog.txt", mode="w")
+    log = open("gamelogs/old_gamelog.txt", mode="w")
     log.close()
 
 
@@ -77,7 +77,7 @@ def setupParser():
     parser.add_argument("-k", "--k_value", default=75, type=int, dest="K",
                         help="K value that determines rating changes")
     parser.add_argument("-f", "--file_import", default="", dest="fileImport",
-                        help="Whether to read competition data from file (vs explicit function calls)")
+                        help="What file to to read competition data from file present in /gamelogs")
     parser.add_argument("-r", "--start_rating", default=1000, type=int, dest="startRating",
                         help="Starting rating for all players")
     parser.add_argument("-m", "--match_results", default=None, dest="result",
@@ -90,7 +90,7 @@ def setupParser():
 
     args = parser.parse_args()
     K = args.K
-    fileImport = args.fileImport
+    fileImport = "gamelogs/" + args.fileImport
     startRating = args.startRating
     matchResult = args.result
     toSend = args.send
@@ -101,6 +101,7 @@ def setupParser():
 def enterMatchesFromCode():
     global K
     global startRating
+    backupGamelog = "gamelogs/old_gamelog.txt"
 
     william = Player("William", startRating)
     brian = Player("Brian", startRating)
@@ -110,7 +111,7 @@ def enterMatchesFromCode():
     players = [william, brian, will, franklin, pop]
 
     clearLog()
-    log = open("old_gamelog.txt", mode="a")
+    log = open(backupGamelog, mode="a")
     for p in players:
         log.write(p.name + " " + str(p.rating) + "\n")
     log.write("0\n")
@@ -129,7 +130,7 @@ def enterMatchesFromCode():
 
     players = [william, brian, will, franklin, pop]
 
-    log = open("old_gamelog.txt", mode="a")
+    log = open(backupGamelog, mode="a")
     log.write("0\n")
     log.close()
 
