@@ -291,7 +291,12 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    main(True, "gamelog_no_hayden.txt")
+    main(True, "gamelog_test.txt")
+    s = ""
+    html = open("score.html","r")
+    for line in html.readlines():
+        s+=line
+    return s
     return 'The score bot is active'
 
 if __name__ == '__main__':
