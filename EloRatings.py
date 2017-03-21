@@ -3,6 +3,7 @@ import numpy as np
 import requests
 from pandas import DataFrame
 from argparse import ArgumentParser
+import os
 #from tabulate import tabulate
 #import json
 from flask import Flask
@@ -294,6 +295,6 @@ def index():
     return 'The score bot is active'
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
 
 
