@@ -1,0 +1,20 @@
+William 1000
+Brian 1000
+Will 1000
+Franklin 1000
+Pop 1000
+Hayden 1000
+0
+Hayden defeats Will
+William defeats Brian
+Brian defeats Will
+William defeats Will
+Brian defeats Hayden
+Will defeats Brian
+Franklin defeats Will
+Franklin defeats Pop
+Will defeats Pop
+Franklin defeats Will
+Will defeats Franklin
+Will defeats Pop
+0
