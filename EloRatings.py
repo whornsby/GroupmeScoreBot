@@ -289,7 +289,7 @@ def main(G, FI):
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 def index():
     main(True, "gamelog_no_hayden.txt")
     return 'The score bot is active'
