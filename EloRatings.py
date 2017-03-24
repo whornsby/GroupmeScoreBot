@@ -149,6 +149,7 @@ def enterMatchesFromCode():
 def readMatchesFromFile():
     global fileImport
     global players
+    global K
 
     try:
         file = open(fileImport, "r")
@@ -339,7 +340,7 @@ def renderHTML():
 
 
 def main(FI):
-    global Kv
+    global K
     global startRating
     global matchResult
     global fileImport
