@@ -2,11 +2,8 @@ import math
 import numpy as np
 import requests
 from pandas import DataFrame
-from argparse import ArgumentParser
 import os
-#from tabulate import tabulate
-#import json
-from flask import Flask
+#from argparse import ArgumentParser
 
 class Player:
     def __init__(self, name, rating):
@@ -65,39 +62,40 @@ def clearLog():
     log.close()
 
 
-def setupParser():
-    global K
-    global fileImport
-    global startRating
-    global matchResult
-    global toSend
-    global toGet
-
-    parser = ArgumentParser()
-    parser.add_argument("-k", "--k_value", default=75, type=int, dest="K",
-                        help="K value that determines rating changes")
-    parser.add_argument("-f", "--file_import", default="", dest="fileImport",
-                        help="What file to to read competition data from file present in /gamelogs")
-    parser.add_argument("-r", "--start_rating", default=1000, type=int, dest="startRating",
-                        help="Starting rating for all players")
-    parser.add_argument("-m", "--match_results", default=None, dest="result",
-                        help="Results of a match. Formatted as \"[winner] defeats [loser]\".")
-    parser.add_argument("-s", "--send", default=False, dest="send", action="store_true",
-                        help="Whether to send the results to the GroupMe API")
-    parser.add_argument("-g", "--get", default=False, dest="get", action="store_true",
-                        help="Whether to get last message from GroupMe to add new match")
-
-
-    args = parser.parse_args()
-    K = args.K
-    fileImport = "gamelogs/" + args.fileImport
-    startRating = args.startRating
-    matchResult = args.result
-    toSend = args.send
-    toGet = args.get
+# def setupParser():
+#     global K
+#     global fileImport
+#     global startRating
+#     global matchResult
+#     global toSend
+#     global toGet
+#
+#     parser = ArgumentParser()
+#     parser.add_argument("-k", "--k_value", default=75, type=int, dest="K",
+#                         help="K value that determines rating changes")
+#     parser.add_argument("-f", "--file_import", default="", dest="fileImport",
+#                         help="What file to to read competition data from file present in /gamelogs")
+#     parser.add_argument("-r", "--start_rating", default=1000, type=int, dest="startRating",
+#                         help="Starting rating for all players")
+#     parser.add_argument("-m", "--match_results", default=None, dest="result",
+#                         help="Results of a match. Formatted as \"[winner] defeats [loser]\".")
+#     parser.add_argument("-s", "--send", default=False, dest="send", action="store_true",
+#                         help="Whether to send the results to the GroupMe API")
+#     parser.add_argument("-g", "--get", default=False, dest="get", action="store_true",
+#                         help="Whether to get last message from GroupMe to add new match")
+#
+#
+#     args = parser.parse_args()
+#     K = args.K
+#     fileImport = "gamelogs/" + args.fileImport
+#     startRating = args.startRating
+#     matchResult = args.result
+#     toSend = args.send
+#     toGet = args.get
 
 
 # this isn't for modularity, its only purpose is to make the main cleaner
+
 def enterMatchesFromCode():
     global K
     global startRating
@@ -138,6 +136,8 @@ def enterMatchesFromCode():
 
 
 def readMatchesFromFile():
+    global fileImport
+
     try:
         file = open(fileImport, "r")
     except:
@@ -179,17 +179,30 @@ def playerExists(players, name):
     return len(player) > 0
 
 
-def processMatchFromStrings(winner, loser, players):
-    # see if players exist and add them to list
+def processMatchFromStrings(winner, loser):
+    global players
+
+    ifAdd = False
+    # see if players exist and add them to list if ifAdd
     if not playerExists(players, winner):
-        players.append(Player(winner, startRating))
+        if ifAdd:
+            players.append(Player(winner, startRating))
+        else:
+            raise AttributeError(winner + " is not a current player")
+
     if not playerExists(players, loser):
-        players.append(Player(loser, startRating))
+        if ifAdd:
+            players.append(Player(loser, startRating))
+        else:
+            raise AttributeError(loser+ " is not a current player")
+
     # get the actual player objects
     winner = [p for p in players if p.name == winner][0]
     loser = [p for p in players if p.name == loser][0]
+
     # input match results into model
     winner.defeats(loser, K)
+
     # keep data already in file
     readFile = open(fileImport)
     lines = readFile.readlines()
@@ -202,53 +215,40 @@ def processMatchFromStrings(winner, loser, players):
     w.write("\n0")
     w.close()
 
-    return players # because I'm stubborn about making players global
 
-
-def sendMessage(message, botID="9fa5d231a19c02ec0c55e322a3"):
+def sendMessage(message, botID=os.environ.get("BOT_ID")):
     data = {"text": message, "bot_id": botID}
     send = requests.post("https://api.groupme.com/v3/bots/post", json=data)
     return send
 
-def main(G, FI):
-    global K
-    global startRating
-    global matchResult
-    global fileImport
-    global toGet
-    global html
-    html = False
 
-    #setupParser()
-    K = 75
-    startRating = 1000
-    matchResult = ""
-    toGet = G
-    fileImport = "gamelogs/" + FI
+def parseCommands():
+    global players
 
-    if fileImport is not "":
-        players = readMatchesFromFile()
-    else:
-        players = enterMatchesFromCode()
+    botID = os.environ.get("BOT_TOKEN")
+    groupID = os.environ.get("GROUP_DEBUG")
+    limit = "1"
+    get = requests.get("https://api.groupme.com/v3/groups/" + groupID + "/messages?token=" + botID + "&limit=" + limit)
+    string = get.json()[u'response'][u'messages'][0][u'text'].split(" ")
+    string = [str(u) for u in string]
 
-    if toGet:
-        botID = "D5vJsEi9CywYDwpPLRueeYXI9DrXIYw39ku1aUDd"
-        groupID = "29780828"
-        limit = "1"
-        get = requests.get("https://api.groupme.com/v3/groups/" + groupID + "/messages?token=" + botID +"&limit="+limit)
-        string = get.json()[u'response'][u'messages'][0][u'text'].split(" ")
-        string = [str(u) for u in string]
-        # string is now an list of the words in the most recent message
+    # string is now a list of the words in the most recent message
+    # test for command before doing anything
+    if string[0][0] == "$":
 
         if string[0] == "$match":
             print string
             try:
-                players = processMatchFromStrings(string[1], string[3], players)
+                players = processMatchFromStrings(string[1], string[3])
                 winner = [p for p in players if p.name == string[1]][0]
                 loser = [p for p in players if p.name == string[3]][0]
-                sendMessage(winner.name + "->" + str(int(round(winner.rating)))+"\n"+loser.name + "->" + str(int(round(loser.rating))))
+                sendMessage(winner.name + "->" + str(int(round(winner.rating))) + "\n" + loser.name + "->" + str(
+                    int(round(loser.rating))))
             except IndexError:
-                print sendMessage("Your command is in the wrong format.\nTry \n>\"$match [winner] defeats [loser]\".")
+                sendMessage("Your command is in the wrong format.\nTry \n\"$match [winner] defeats [loser]\".")
+            except AttributeError as error:
+                sendMessage(error.message)
+
         elif string[0] == "$score":
             players.sort()
             d = [[p.name, "(" + str(p.wins) + ", " + str(p.losses) + ")", int(round(p.rating))] for p in players]
@@ -258,48 +258,52 @@ def main(G, FI):
             message = "" + df.to_string(header=False) + "\n\n"
             # print message
             sendMessage(message)
-        else:
-            #print string
-            print "No command in most recent message."
 
-    elif matchResult is not None:
-        #-g and -m should never be used together. Same funtionality for different use cases
-        wName, x, lName = matchResult.split(" ")
-        # assignment is needed because a player could be added
-        # future me: consider separating the method calls so playerExists() returns the list
-        players = processMatchFromStrings(wName, lName, players)
+        elif string[0] == "$commands":
+            sendMessage(">$match: [winner] defeats [loser]\n"
+                        "$score")
+        else:
+            # message starts with 0 but there is not recognized command
+            pass
+            # sendMessage("No valid command recognized")
+
+
+def main(FI):
+    global K
+    global startRating
+    global matchResult
+    global fileImport
+    global players
+
+    #setupParser()
+    K = 75
+    startRating = 1000
+    fileImport = "gamelogs/" + FI
+
+    players = readMatchesFromFile()
+
+    # if fileImport is not "":
+    # else:
+    #     players = enterMatchesFromCode()
+
+    #where most of the work is done
+    parseCommands()
 
     players.sort()
 
     d = [[p.name, "(" + str(p.wins) + ", " + str(p.losses) + ")", int(round(p.rating))] for p in players]
     df = DataFrame(data=d, columns=["Name", "Record", "Rating"],
                    index=["#" + str(i + 1) + ". " for i in range(len(players))])
-    if(html):
-        f = open("score.html", mode='w')
-        f.write(df.style.render())
-        f.close()
+
+    f = open("score.html", mode='w')
+    f.write(df.style.render())
+    f.close()
 
     out = calculateOutliers(players)
 
     toSend = False
-    message = "" + df.to_string(header=False) + "\n\n" + out
     # print message
     if toSend:
+        message = "" + df.to_string(header=False) + "\n\n" + out
         sendMessage(message)
-
-app = Flask(__name__)
-
-@app.route('/', methods=['POST', 'GET'])
-def index():
-    main(True, "gamelog_test.txt")
-    s = ""
-    html = open("score.html","r")
-    for line in html.readlines():
-        s+=line
-    return s
-    return 'The score bot is active'
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
-
 
