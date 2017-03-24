@@ -346,7 +346,7 @@ def main(FI):
     global players
 
     #setupParser()
-    K = 75
+    K = int(os.environ.get("K_VALUE"))
     startRating = 1000
     fileImport = "gamelogs/" + FI
 
