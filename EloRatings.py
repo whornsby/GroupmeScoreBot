@@ -279,7 +279,7 @@ def parseCommands():
                     winner = [p for p in players if p.name == string[1]][0]
                     loser = [p for p in players if p.name == string[3]][0]
                     whatif = winner.whatif(loser)
-                    sendMessage(winner.name + " -> " + whatif[0] + "\n" + loser.name + " -> " + whatif[1])
+                    sendMessage(winner.name + " -> " + str(int(round(whatif[0]))) + "\n" + loser.name + " -> " + str(int(round(whatif[1]))))
             except IndexError:
                 sendMessage("Your command is in the wrong format. \nTry \n$whatIf [winner] defeats [loser]")
 
@@ -319,7 +319,7 @@ def parseCommands():
             sendMessage(">$match [winner] defeats [loser]\n"
                         "$score\n"
                         "$playerHistory [player]\n"
-                        "$matchHistory]\n"
+                        "$matchHistory\n"
                         "$whatif [winner] defeats [loser]\n"
                         "$outliers\n"
                         "$commands")
