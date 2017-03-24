@@ -1,1 +1,1 @@
-web: python EloRatings.py
+web: python server.py
