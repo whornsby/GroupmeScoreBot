@@ -180,8 +180,8 @@ def readMatchesFromFile():
             # input match results into model
             winner.defeats(loser, K)
             i += 1
-    except:
-        print "---" + fileImport + " is not a valid file\n---Now exiting"
+    except IOError:
+        print "---" + fileImport + " is not a valid file."
 
 
 
