@@ -226,7 +226,9 @@ def parseCommands():
     global players
 
     botID = os.environ.get("BOT_TOKEN")
+    print botID
     groupID = os.environ.get("GROUP_DEBUG")
+    print groupID
     limit = "1"
     get = requests.get("https://api.groupme.com/v3/groups/" + groupID + "/messages?token=" + botID + "&limit=" + limit)
     string = get.json()[u'response'][u'messages'][0][u'text'].split(" ")
