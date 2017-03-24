@@ -169,9 +169,9 @@ def readMatchesFromFile():
             wName, x, lName = lines[i].strip().split(" ")
 
             # if winner or loser are not in players add them to the list
-            if not playerExists(players, wName):
+            if not playerExists(wName):
                 players.append(Player(wName, startRating))
-            if not playerExists(players, lName):
+            if not playerExists(lName):
                 players.append(Player(lName, startRating))
 
             # get the actual player objects
@@ -285,9 +285,9 @@ def parseCommands():
         elif string[0] == "$playerHistory":
             try:
                 if playerExists(string[1]):
-                    winner = [p for p in players if p.name == string[1]][0]
+                    player = [p for p in players if p.name == string[1]][0]
                     string = ""
-                    for s in [str(h) for h in winner.history]:
+                    for s in [str(h) for h in player.history]:
                         string += s
                     sendMessage(string)
             except IndexError:
