@@ -289,7 +289,7 @@ def parseCommands():
                     player = [p for p in players if p.name == string[1]][0]
                     string = ""
                     for s in [str(h) for h in player.history]:
-                        string += s
+                        string += s + "\n"
                     sendMessage(string)
             except IndexError:
                 sendMessage("Your command is in the wrong format. \nTry \n$playerHistory [player]")
