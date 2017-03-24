@@ -185,7 +185,6 @@ def readMatchesFromFile():
         print "---" + fileImport + " is not a valid file."
 
 
-
 def playerExists(name):
     global players
     player = [p for p in players if p.name == name]
@@ -253,7 +252,7 @@ def parseCommands():
         if string[0] == "$match":
             print string
             try:
-                players = processMatchFromStrings(string[1], string[3])
+                processMatchFromStrings(string[1], string[3])
                 winner = [p for p in players if p.name == string[1]][0]
                 loser = [p for p in players if p.name == string[3]][0]
                 sendMessage(winner.name + "->" + str(int(round(winner.rating))) + "\n" + loser.name + "->" + str(
