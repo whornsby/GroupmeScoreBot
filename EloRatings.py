@@ -64,7 +64,7 @@ def calculateOutliers(players):
             good = players[i]
             string += str(good) + " is statistically really good!\n"
     if string == "":
-        string = "There are on outliers."
+        string = "There are no outliers."
     return string
 
 
@@ -279,7 +279,7 @@ def parseCommands():
                     winner = [p for p in players if p.name == string[1]][0]
                     loser = [p for p in players if p.name == string[3]][0]
                     whatif = winner.whatif(loser)
-                    sendMessage(winner + " -> " + whatif[0] + "\n" + loser + " -> " + whatif[1])
+                    sendMessage(winner.name + " -> " + whatif[0] + "\n" + loser.name + " -> " + whatif[1])
             except IndexError:
                 sendMessage("Your command is in the wrong format. \nTry \n$whatIf [winner] defeats [loser]")
 
