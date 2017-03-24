@@ -34,6 +34,15 @@ class Player:
             log.write(self.name + " defeats " + other.name + "\n")
             log.close()
 
+    def whatif(self, other, k=75):
+        expected = 1 / (1 + math.pow(10, (other.rating - self.rating) / 400))
+        otherExpected = 1 / (1 + math.pow(10, (self.rating - other.rating) / 400))
+
+        hypothetialRating = self.rating + k * (1-expected)
+        hypothetialOther = other.rating + k * (0-otherExpected)
+
+        return (hypothetialRating, hypothetialOther)
+
     def __str__(self):
         return self.name + " (" + str(self.wins) + ", " + str(self.losses) + ") - " + str(int(round(self.rating, 0)))
 
@@ -54,6 +63,8 @@ def calculateOutliers(players):
         if npp[i] > q3 + 1.5 * iqr:
             good = players[i]
             string += str(good) + " is statistically really good!\n"
+    if string == "":
+        string = "There are on outliers."
     return string
 
 
@@ -137,44 +148,45 @@ def enterMatchesFromCode():
 
 def readMatchesFromFile():
     global fileImport
+    global players
 
     try:
         file = open(fileImport, "r")
+
+        lines = file.readlines()
+        i = 0
+        players = []
+
+        # add players
+        while lines[i].strip() is not "0":
+            name, start = lines[i].strip().split(" ")
+            players.append(Player(name, int(start)))
+            i += 1
+        i += 1
+
+        # start competition
+        while lines[i].strip() is not "0":
+            wName, x, lName = lines[i].strip().split(" ")
+
+            # if winner or loser are not in players add them to the list
+            if not playerExists(players, wName):
+                players.append(Player(wName, startRating))
+            if not playerExists(players, lName):
+                players.append(Player(lName, startRating))
+
+            # get the actual player objects
+            winner = [p for p in players if p.name == wName][0]
+            loser = [p for p in players if p.name == lName][0]
+            # input match results into model
+            winner.defeats(loser, K)
+            i += 1
     except:
         print "---" + fileImport + " is not a valid file\n---Now exiting"
-        exit()
-    lines = file.readlines()
-    i = 0
-    players = []
-
-    # add players
-    while lines[i].strip() is not "0":
-        name, start = lines[i].strip().split(" ")
-        players.append(Player(name, int(start)))
-        i += 1
-    i += 1
-
-    # start competition
-    while lines[i].strip() is not "0":
-        wName, x, lName = lines[i].strip().split(" ")
-
-        # if winner or loser are not in players add them to the list
-        if not playerExists(players, wName):
-            players.append(Player(wName, startRating))
-        if not playerExists(players, lName):
-            players.append(Player(lName, startRating))
-
-        # get the actual player objects
-        winner = [p for p in players if p.name == wName][0]
-        loser = [p for p in players if p.name == lName][0]
-        # input match results into model
-        winner.defeats(loser, K)
-        i += 1
-
-    return players
 
 
-def playerExists(players, name):
+
+def playerExists(name):
+    global players
     player = [p for p in players if p.name == name]
     return len(player) > 0
 
@@ -184,13 +196,13 @@ def processMatchFromStrings(winner, loser):
 
     ifAdd = False
     # see if players exist and add them to list if ifAdd
-    if not playerExists(players, winner):
+    if not playerExists(winner):
         if ifAdd:
             players.append(Player(winner, startRating))
         else:
             raise AttributeError(winner + " is not a current player")
 
-    if not playerExists(players, loser):
+    if not playerExists(loser):
         if ifAdd:
             players.append(Player(loser, startRating))
         else:
@@ -224,6 +236,7 @@ def sendMessage(message, botID=os.environ.get("BOT_ID")):
 
 def parseCommands():
     global players
+    global fileImport
 
     botID = os.environ.get("BOT_TOKEN")
     groupID = os.environ.get("GROUP_DEBUG")
@@ -259,17 +272,74 @@ def parseCommands():
             # print message
             sendMessage(message)
 
+        elif string[0] == "$whatIf":
+            try:
+                if playerExists(string[1]) and playerExists(string[3]):
+                    winner = [p for p in players if p.name == string[1]][0]
+                    loser = [p for p in players if p.name == string[3]][0]
+                    whatif = winner.whatif(loser)
+                    sendMessage(winner + " -> " + whatif[0] + "\n" + loser + " -> " + whatif[1])
+            except IndexError:
+                sendMessage("Your command is in the wrong format. \nTry \n$whatIf [winner] defeats [loser]")
+
+        elif string[0] == "$playerHistory":
+            try:
+                if playerExists(string[1]):
+                    winner = [p for p in players if p.name == string[1]][0]
+                    string = ""
+                    for s in [str(h) for h in winner.history]:
+                        string += s
+                    sendMessage(string)
+            except IndexError:
+                sendMessage("Your command is in the wrong format. \nTry \n$playerHistory [player]")
+
+        elif string[0] == "$matchHistory":
+            file = open(fileImport, "r")
+
+            lines = file.readlines()
+            i = 0
+
+            # add players
+            while lines[i].strip() is not "0":
+                i += 1
+            i += 1
+            matches = ""
+            while lines[i].strip() is not "0":
+                matches += lines[i] + "\n"
+                i+=1
+            file.close()
+            sendMessage(matches)
+
+        elif string[0] == "$outliers":
+            out = calculateOutliers(players)
+            sendMessage(out)
+
         elif string[0] == "$commands":
-            sendMessage(">$match: [winner] defeats [loser]\n"
-                        "$score")
+            sendMessage(">$match [winner] defeats [loser]\n"
+                        "$score\n"
+                        "$playerHistory [player]\n"
+                        "$matchHistory]\n"
+                        "$whatif [winner] defeats [loser]\n"
+                        "$outliers\n"
+                        "$commands")
         else:
             # message starts with 0 but there is not recognized command
             pass
             # sendMessage("No valid command recognized")
 
 
+def renderHTML():
+    d = [[p.name, "(" + str(p.wins) + ", " + str(p.losses) + ")", int(round(p.rating))] for p in players]
+    df = DataFrame(data=d, columns=["Name", "Record", "Rating"],
+                   index=["#" + str(i + 1) + ". " for i in range(len(players))])
+
+    f = open("score.html", mode='w')
+    f.write(df.style.render())
+    f.close()
+
+
 def main(FI):
-    global K
+    global Kv
     global startRating
     global matchResult
     global fileImport
@@ -280,7 +350,7 @@ def main(FI):
     startRating = 1000
     fileImport = "gamelogs/" + FI
 
-    players = readMatchesFromFile()
+    readMatchesFromFile()
 
     # if fileImport is not "":
     # else:
@@ -291,19 +361,7 @@ def main(FI):
 
     players.sort()
 
-    d = [[p.name, "(" + str(p.wins) + ", " + str(p.losses) + ")", int(round(p.rating))] for p in players]
-    df = DataFrame(data=d, columns=["Name", "Record", "Rating"],
-                   index=["#" + str(i + 1) + ". " for i in range(len(players))])
+    renderHTML()
 
-    f = open("score.html", mode='w')
-    f.write(df.style.render())
-    f.close()
 
-    out = calculateOutliers(players)
-
-    toSend = False
-    # print message
-    if toSend:
-        message = "" + df.to_string(header=False) + "\n\n" + out
-        sendMessage(message)
 
