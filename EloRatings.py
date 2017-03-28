@@ -337,6 +337,7 @@ def parseCommands():
                         "$matchHistory\n"
                         "$whatif [winner] defeats [loser]\n"
                         "$outliers\n"
+                        "$chance [winner] defeats [loser]"
                         "$commands")
         else:
             # message starts with 0 but there is not recognized command
@@ -375,7 +376,7 @@ def main(FI):
     #where most of the work is done
     parseCommands()
 
-    print Player(1200).chance(Player(1300))
+    print Player("Jeff",1200).chance(Player("Steve",1300))
 
     players.sort()
 
