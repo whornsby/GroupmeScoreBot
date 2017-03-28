@@ -16,8 +16,8 @@ class Player:
 
     def defeats(self, other, k=75):
         # look at wiki page for elo ratings for references
-        expected = 1 / (1 + math.pow(10, (other.rating - self.rating) / 400))
-        otherExpected = 1 / (1 + math.pow(10, (self.rating - other.rating) / 400))
+        expected = 1.0 / (1.0 + math.pow(10, (other.rating - self.rating) / 400.0))
+        otherExpected = 1.0 / (1.0 + math.pow(10, (self.rating - other.rating) / 400.0))
 
         self.rating += k * (1 - expected)
         self.history.append(int(round(self.rating)))
@@ -35,13 +35,18 @@ class Player:
             log.close()
 
     def whatif(self, other, k=75):
-        expected = 1 / (1 + math.pow(10, (other.rating - self.rating) / 400))
-        otherExpected = 1 / (1 + math.pow(10, (self.rating - other.rating) / 400))
+        expected = 1.0 / (1.0 + math.pow(10, (other.rating - self.rating) / 400.0))
+        otherExpected = 1.0 / (1.0 + math.pow(10, (self.rating - other.rating) / 400.0))
 
         hypothetialRating = self.rating + k * (1-expected)
         hypothetialOther = other.rating + k * (0-otherExpected)
 
         return (hypothetialRating, hypothetialOther)
+
+    def chance(self, other):
+        expected = 1.0 / (1.0 + math.pow(10, (other.rating - self.rating) / 400.0))
+        otherExpected = 1.0 / (1.0 + math.pow(10, (self.rating - other.rating) / 400.0))
+        return (expected, otherExpected)
 
     def __str__(self):
         return self.name + " (" + str(self.wins) + ", " + str(self.losses) + ") - " + str(int(round(self.rating, 0)))
@@ -314,7 +319,18 @@ def parseCommands():
             out = calculateOutliers(players)
             sendMessage(out)
 
-        elif string[0] == "$commands":
+        elif string[0] == "$chance":
+            try:
+                if playerExists(string[1]) and playerExists(string[3]):
+                    winner = [p for p in players if p.name == string[1]][0]
+                    loser = [p for p in players if p.name == string[3]][0]
+                    winnerChance, loserChance = winner.chance(loser)
+                    sendMessage("Probability " + winner.name + " wins: " + str(round(winnerChance,1)*100) +
+                                "\nProbability " + loser.name + "wins: " + str(round(loserChance,1)*100))
+            except IndexError:
+                sendMessage("Your command is in the wrong format. \nTry \n$chance [winner] defeats [loser]")
+
+        elif string[0] == "$commands" or string[0] == "$help":
             sendMessage(">$match [winner] defeats [loser]\n"
                         "$score\n"
                         "$playerHistory [player]\n"
@@ -358,6 +374,8 @@ def main(FI):
 
     #where most of the work is done
     parseCommands()
+
+    print Player(1200).chance(Player(1300))
 
     players.sort()
 
