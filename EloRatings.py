@@ -199,7 +199,7 @@ def playerExists(name):
 def processMatchFromStrings(winner, loser):
     global players
 
-    ifAdd = False
+    ifAdd = os.environ.get("ADD_NEW_PLAYER") == "True"
     # see if players exist and add them to list if ifAdd
     if not playerExists(winner):
         if ifAdd:
@@ -247,7 +247,9 @@ def parseCommands():
     groupID = os.environ.get("GROUP_APPT")
     limit = "1"
     get = requests.get("https://api.groupme.com/v3/groups/" + groupID + "/messages?token=" + botID + "&limit=" + limit)
-    string = get.json()[u'response'][u'messages'][0][u'text'].split(" ")
+    string = get.json()[u'response'][u'messages'][0]
+    senderName = str(string[u'name'])
+    string = string[u'text'].split(" ")
     string = [str(u) for u in string]
 
     # string is now a list of the words in the most recent message
@@ -277,7 +279,7 @@ def parseCommands():
             # print message
             sendMessage(message)
 
-        elif string[0] == "$whatIf":
+        elif string[0] == "$whatIf" or string[0] == "$whatif":
             try:
                 if playerExists(string[1]) and playerExists(string[3]):
                     winner = [p for p in players if p.name == string[1]][0]
@@ -291,7 +293,7 @@ def parseCommands():
             try:
                 if playerExists(string[1]):
                     player = [p for p in players if p.name == string[1]][0]
-                    string = ""
+                    string = player.name + ":\n"
                     for s in [str(h) for h in player.history]:
                         string += s + "\n"
                     sendMessage(string)
@@ -326,7 +328,7 @@ def parseCommands():
                     loser = [p for p in players if p.name == string[3]][0]
                     winnerChance, loserChance = winner.chance(loser)
                     sendMessage("Probability " + winner.name + " wins: " + str(round(winnerChance,1)*100) +
-                                "\nProbability " + loser.name + "wins: " + str(round(loserChance,1)*100))
+                                "\nProbability " + loser.name + " wins: " + str(round(loserChance,1)*100))
             except IndexError:
                 sendMessage("Your command is in the wrong format. \nTry \n$chance [winner] defeats [loser]")
 
@@ -337,12 +339,17 @@ def parseCommands():
                         "$matchHistory\n"
                         "$whatif [winner] defeats [loser]\n"
                         "$outliers\n"
-                        "$chance [winner] defeats [loser]"
+                        "$chance [winner] defeats [loser]\n"
                         "$commands")
+
         else:
-            # message starts with 0 but there is not recognized command
-            pass
-            # sendMessage("No valid command recognized")
+            # message starts with $ but there is not recognized command
+            if senderName == "Brian Acosta":
+                sendMessage("Stop fucking with me Brian")
+                #brian = [p for p in players if p.name == "Brian"][0]
+                #sendMessage("Brian: " + str(brian.rating) + " -> 0")
+            else:
+                sendMessage("Not valid command")
 
 
 def renderHTML():
@@ -375,8 +382,6 @@ def main(FI):
 
     #where most of the work is done
     parseCommands()
-
-    print Player("Jeff",1200).chance(Player("Steve",1300))
 
     players.sort()
 
