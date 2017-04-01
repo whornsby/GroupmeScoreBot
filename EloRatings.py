@@ -17,7 +17,7 @@ class Player:
     def defeats(self, other, k=75):
         # look at wiki page for elo ratings for references
         expected = 1.0 / (1.0 + math.pow(10.0, (other.rating - self.rating) / 400.0))
-        otherExpected = 1.0 / (1.0 + math.pow(10.o, (self.rating - other.rating) / 400.0))
+        otherExpected = 1.0 / (1.0 + math.pow(10.0, (self.rating - other.rating) / 400.0))
 
         self.rating += float(k * (1 - expected))
         self.history.append(int(round(self.rating)))
