@@ -34,6 +34,22 @@ class Player:
             log.write(self.name + " defeats " + other.name + "\n")
             log.close()
 
+    #this only works for 2v2
+    def teamWin(self, otherRating, k=75):
+        expected = 1.0 / (1.0 + math.pow(10.0, (otherRating - self.rating) / 400.0))
+        self.rating += float(k * (1 - expected))
+        self.history.append(int(round(self.rating)))
+        self.wins += 1
+
+    def teamLoss(self,otherRating, k=75):
+        expected = 1.0 / (1.0 + math.pow(10.0, (otherRating - self.rating) / 400.0))
+        self.rating += float(k * (0 - expected))
+        self.history.append(int(round(self.rating)))
+        self.losses += 1
+
+    def oppTeamRating(self, teammate, opp1, opp2):
+        return opp1.rating + opp2.rating + teammate.rating
+
     def whatif(self, other, k=75):
         expected = 1.0 / (1.0 + math.pow(10, (other.rating - self.rating) / 400.0))
         otherExpected = 1.0 / (1.0 + math.pow(10, (self.rating - other.rating) / 400.0))
@@ -172,19 +188,34 @@ def readMatchesFromFile():
 
         # start competition
         while lines[i].strip() is not "0":
-            wName, x, lName = lines[i].strip().split(" ")
+            words = lines[i].string().strip().split(" ")
+            if words[0] == "Team":
+                wName1, wName2, x, lName1, lName2 = words[1:]
 
-            # if winner or loser are not in players add them to the list
-            if not playerExists(wName):
-                players.append(Player(wName, startRating))
-            if not playerExists(lName):
-                players.append(Player(lName, startRating))
+                winner1 = [p for p in players if p.name == wName1][0]
+                winner2 = [p for p in players if p.name == wName2][0]
+                loser1 = [p for p in players if p.name == lName1][0]
+                loser2 = [p for p in players if p.name == lName2][0]
 
-            # get the actual player objects
-            winner = [p for p in players if p.name == wName][0]
-            loser = [p for p in players if p.name == lName][0]
-            # input match results into model
-            winner.defeats(loser, K)
+                winner1.teamWin(winner1.oppTeamRating(winner2,loser1,loser2),K)
+                winner2.teamWin(winner2.oppTeamRating(winner1,loser1,loser2),K)
+
+                loser1.teamLoss(loser1.oppTeamRating(loser1,winner1,winner2),K)
+                loser2.teamLoss(loser2.oppTeamRating(loser1,winner1,winner2),K)
+            else:
+                wName, x, lName = words
+
+                # if winner or loser are not in players add them to the list
+                if not playerExists(wName):
+                    players.append(Player(wName, startRating))
+                if not playerExists(lName):
+                    players.append(Player(lName, startRating))
+
+                # get the actual player objects
+                winner = [p for p in players if p.name == wName][0]
+                loser = [p for p in players if p.name == lName][0]
+                # input match results into model
+                winner.defeats(loser, K)
             i += 1
     except IOError:
         print "---" + fileImport + " is not a valid file."
@@ -194,6 +225,60 @@ def playerExists(name):
     global players
     player = [p for p in players if p.name == name]
     return len(player) > 0
+
+
+def processTeamFromStrings(winner1, winner2, loser1, loser2):
+    ifAdd = os.environ.get("ADD_NEW_PLAYER") == "True"
+    # see if players exist and add them to list if ifAdd
+    if not playerExists(winner1):
+        if ifAdd:
+            players.append(Player(winner1, startRating))
+        else:
+            raise AttributeError(winner1 + " is not a current player")
+    if not playerExists(winner2):
+        if ifAdd:
+            players.append(Player(winner2, startRating))
+        else:
+            raise AttributeError(winner2 + " is not a current player")
+
+    if not playerExists(loser1):
+        if ifAdd:
+            players.append(Player(loser1, startRating))
+        else:
+            raise AttributeError(loser1 + " is not a current player")
+    if not playerExists(loser2):
+        if ifAdd:
+            players.append(Player(loser2, startRating))
+        else:
+            raise AttributeError(loser2 + " is not a current player")
+
+    wName1 = winner1
+    wName2 = winner2
+    lName1 = loser1
+    lName2 = loser2
+
+    winner1 = [p for p in players if p.name == wName1][0]
+    winner2 = [p for p in players if p.name == wName2][0]
+    loser1 = [p for p in players if p.name == lName1][0]
+    loser2 = [p for p in players if p.name == lName2][0]
+
+    winner1.teamWin(wName2, lName1, lName2, K)
+    winner2.teamWin(winner1, lName1, lName2, K)
+
+    loser1.teamLoss(lName2, winner1, wName2, K)
+    loser2.teamLoss(lName1, winner1, wName2, K)
+
+    # keep data already in file
+    readFile = open(fileImport)
+    lines = readFile.readlines()
+    readFile.close()
+
+    # remove 0 at end of file and add new result
+    w = open(fileImport, 'w')
+    w.writelines([item for item in lines[:-1]])
+    w.write("Team " +wName1+" "+wName2+ " defeats " + lName1 + " " + lName2)
+    w.write("\n0")
+    w.close()
 
 
 def processMatchFromStrings(winner, loser):
@@ -258,7 +343,6 @@ def parseCommands():
     if string[0][0] == "$":
 
         if string[0] == "$match":
-            print string
             try:
                 processMatchFromStrings(string[1], string[3])
                 winner = [p for p in players if p.name == string[1]][0]
@@ -267,6 +351,22 @@ def parseCommands():
                     int(round(loser.rating))))
             except IndexError:
                 sendMessage("Your command is in the wrong format.\nTry \n\"$match [winner] defeats [loser]\".")
+            except AttributeError as error:
+                sendMessage(error.message)
+
+        elif string[0].lower() == "$teammatch":
+            try:
+                processTeamFromStrings(string[1],string[2],string[4],string[5])
+                players.sort()
+                d = [[p.name, "(" + str(p.wins) + ", " + str(p.losses) + ")", int(round(p.rating))] for p in players]
+                df = DataFrame(data=d, columns=["Name", "Record", "Rating"],
+                               index=["#" + str(i + 1) + ". " for i in range(len(players))])
+
+                message = "" + df.to_string(header=False) + "\n\n"
+                # print message
+                sendMessage(message)
+            except IndexError:
+                sendMessage("Your command i in the wrong format.\nTry\n %TeamMatch [winner1] [winner2] defeats [loser1] [loser2]")
             except AttributeError as error:
                 sendMessage(error.message)
 
@@ -318,6 +418,16 @@ def parseCommands():
             file.close()
             sendMessage(matches)
 
+        elif string[0] == "$versus":
+            try:
+                if playerExists(string[1]) and playerExists(string[2]):
+                    playerA = [p for p in players if p.name == string[1]][0]
+                    playerB = [p for p in players if p.name == string[2]][0]
+                    record = playerA.versus.get(playerB)
+                    sendMessage(playerA.name + " has a " + str(record) + " against " + playerB.name)
+            except IndexError:
+                sendMessage("Your command is in the wrong format. \nTry \n$versus [winner] [loser]")
+
         elif string[0] == "$outliers":
             out = calculateOutliers(players)
             sendMessage(out)
@@ -350,12 +460,14 @@ def parseCommands():
 
         elif string[0] == "$commands" or string[0] == "$help":
             sendMessage(">$match [winner] defeats [loser]\n"
+                        "$teamMatch [winner1] [winner2] def [loser1] [loser2]\n"
                         "$score\n"
                         "$playerHistory [player]\n"
                         "$matchHistory\n"
                         "$whatif [winner] defeats [loser]\n"
                         "$outliers\n"
                         "$chance [winner] defeats [loser]\n"
+                        "$versus [player1] [player2]"
                         "$Kscore [number]\n"
                         "$commands")
 
