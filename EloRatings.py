@@ -335,7 +335,7 @@ def parseCommands():
 
         elif string[0] == "$Kscore":
             if len(string)>1 and string[1].isdigit():
-                K = int(string[0])
+                K = int(string[1])
                 readMatchesFromFile()
                 players.sort()
                 d = [[p.name, "(" + str(p.wins) + ", " + str(p.losses) + ")", int(round(p.rating))] for p in players]
