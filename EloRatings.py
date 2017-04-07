@@ -356,6 +356,7 @@ def parseCommands():
                         "$whatif [winner] defeats [loser]\n"
                         "$outliers\n"
                         "$chance [winner] defeats [loser]\n"
+                        "$Kscore [number]\n"
                         "$commands")
 
         elif string[0].lower() == "$fuckme":
