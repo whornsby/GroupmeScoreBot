@@ -8,7 +8,7 @@ import os
 class Player:
     def __init__(self, name, rating):
         self.name = name
-        self.rating = rating
+        self.rating = float(rating)
         self.wins = 0
         self.losses = 0
         self.versus = {}
@@ -16,12 +16,12 @@ class Player:
 
     def defeats(self, other, k=75):
         # look at wiki page for elo ratings for references
-        expected = 1.0 / (1.0 + math.pow(10, (other.rating - self.rating) / 400.0))
-        otherExpected = 1.0 / (1.0 + math.pow(10, (self.rating - other.rating) / 400.0))
+        expected = 1.0 / (1.0 + math.pow(10.0, (other.rating - self.rating) / 400.0))
+        otherExpected = 1.0 / (1.0 + math.pow(10.0, (self.rating - other.rating) / 400.0))
 
-        self.rating += k * (1 - expected)
+        self.rating += float(k * (1 - expected))
         self.history.append(int(round(self.rating)))
-        other.rating -= k * otherExpected
+        other.rating -= float(k * otherExpected)
         other.history.append(int(round(other.rating)))
         self.wins += 1
         other.losses += 1
@@ -44,8 +44,8 @@ class Player:
         return (hypothetialRating, hypothetialOther)
 
     def chance(self, other):
-        expected = 1.0 / (1.0 + math.pow(10, (other.rating - self.rating) / 400.0))
-        otherExpected = 1.0 / (1.0 + math.pow(10, (self.rating - other.rating) / 400.0))
+        expected = float(1.0 / (1.0 + math.pow(10, (other.rating - self.rating) / 400.0)))
+        otherExpected = float(1.0 / (1.0 + math.pow(10, (self.rating - other.rating) / 400.0)))
         return (expected, otherExpected)
 
     def __str__(self):

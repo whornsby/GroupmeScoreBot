@@ -2,6 +2,7 @@ William 1000
 Brian 1000
 Will 1000
 Franklin 1000
+Nathan 1000
 Pop 1000
 0
 William defeats Brian
