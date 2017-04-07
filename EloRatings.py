@@ -242,6 +242,7 @@ def sendMessage(message, botID=os.environ.get("BOT_ID")):
 def parseCommands():
     global players
     global fileImport
+    global K
 
     botID = os.environ.get("BOT_TOKEN")
     groupID = os.environ.get("GROUP_APPT")
@@ -328,9 +329,24 @@ def parseCommands():
                     loser = [p for p in players if p.name == string[3]][0]
                     winnerChance, loserChance = winner.chance(loser)
                     sendMessage("Probability " + winner.name + " wins: " + str(round(winnerChance,1)*100) +
-                                "\nProbability " + loser.name + " wins: " + str(round(loserChance,1)*100))
+                                "%\nProbability " + loser.name + " wins: " + str(round(loserChance,1)*100) + "%")
             except IndexError:
                 sendMessage("Your command is in the wrong format. \nTry \n$chance [winner] defeats [loser]")
+
+        elif string[0] == "$Kscore":
+            if len(string)>1 and string[1].isdigit():
+                K = int(string[0])
+                readMatchesFromFile()
+                players.sort()
+                d = [[p.name, "(" + str(p.wins) + ", " + str(p.losses) + ")", int(round(p.rating))] for p in players]
+                df = DataFrame(data=d, columns=["Name", "Record", "Rating"],
+                               index=["#" + str(i + 1) + ". " for i in range(len(players))])
+
+                message = "" + df.to_string(header=False) + "\n\n"
+                # print message
+                sendMessage(message)
+            else:
+                senderName("Plese enter a number")
 
         elif string[0] == "$commands" or string[0] == "$help":
             sendMessage(">$match [winner] defeats [loser]\n"
@@ -341,6 +357,9 @@ def parseCommands():
                         "$outliers\n"
                         "$chance [winner] defeats [loser]\n"
                         "$commands")
+
+        elif string[0].lower() == "$fuckme":
+            sendMessage("No.")
 
         else:
             # message starts with $ but there is not recognized command
