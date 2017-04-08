@@ -188,7 +188,7 @@ def readMatchesFromFile():
 
         # start competition
         while lines[i].strip() is not "0":
-            words = lines[i].string().strip().split(" ")
+            words = lines[i].strip().split(" ")
             if words[0] == "Team":
                 wName1, wName2, x, lName1, lName2 = words[1:]
 
