@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="44b42175-5a63-4a13-a790-949286ef96e0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/EloRatings.py" afterPath="$PROJECT_DIR$/EloRatings.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gamelogs/gamelog_no_hayden.txt" afterPath="$PROJECT_DIR$/gamelogs/gamelog_no_hayden.txt" />
     </list>
     <ignored path="LeagueEloRatings.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,10 +23,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="EloRatings.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="EloRatings.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/EloRatings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="329">
+            <state relative-caret-position="203">
               <caret line="187" column="0" lean-forward="true" selection-start-line="187" selection-start-column="0" selection-end-line="187" selection-end-column="0" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -71,17 +71,17 @@
         <entry file="file://$PROJECT_DIR$/gamelogs/gamelog_test.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="399">
-              <caret line="19" column="15" lean-forward="false" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
+              <caret line="19" column="21" lean-forward="false" selection-start-line="19" selection-start-column="21" selection-end-line="19" selection-end-column="21" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gamelog_no_hayden.txt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="gamelog_no_hayden.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/gamelogs/gamelog_no_hayden.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="399">
-              <caret line="19" column="1" lean-forward="false" selection-start-line="19" selection-start-column="1" selection-end-line="19" selection-end-column="1" />
+            <state relative-caret-position="315">
+              <caret line="15" column="21" lean-forward="true" selection-start-line="15" selection-start-column="21" selection-end-line="15" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -128,16 +128,17 @@
         <option value="$PROJECT_DIR$/requirements.txt" />
         <option value="$PROJECT_DIR$/Procfile" />
         <option value="$PROJECT_DIR$/server.py" />
-        <option value="$PROJECT_DIR$/gamelogs/gamelog_no_hayden.txt" />
         <option value="$PROJECT_DIR$/EloRatings.py" />
+        <option value="$PROJECT_DIR$/gamelogs/gamelog_test.txt" />
+        <option value="$PROJECT_DIR$/gamelogs/gamelog_no_hayden.txt" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1" />
-    <option name="y" value="1" />
-    <option name="width" value="1918" />
-    <option name="height" value="1040" />
+    <option name="x" value="-9" />
+    <option name="y" value="-9" />
+    <option name="width" value="1938" />
+    <option name="height" value="1060" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -635,7 +636,14 @@
       <option name="project" value="LOCAL" />
       <updated>1491604218147</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="fixed string.string()">
+      <created>1491612990771</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1491612990771</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TodoView">
@@ -648,17 +656,17 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1" y="1" width="1918" height="1040" extended-state="6" />
+    <frame x="-9" y="-9" width="1938" height="1060" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1102063" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10902256" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295583" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32616082" sideWeight="0.50185084" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295583" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32849163" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25485715" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" x="612" y="702" width="83" height="50" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32457143" sideWeight="0.49814913" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31731844" sideWeight="0.49814913" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -701,7 +709,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added a server" />
     <MESSAGE value="edited procfile&#10;" />
     <MESSAGE value="fixed port" />
     <MESSAGE value="fixed for POSTs" />
@@ -726,7 +733,8 @@
     <MESSAGE value="0 does not equal 1" />
     <MESSAGE value="changes gamelog file&#10;You really need to do something else with this" />
     <MESSAGE value="added team and versus" />
-    <option name="LAST_COMMIT_MESSAGE" value="added team and versus" />
+    <MESSAGE value="fixed string.string()" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed string.string()" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1086,22 +1094,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gamelogs/gamelog_test.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="19" column="15" lean-forward="false" selection-start-line="19" selection-start-column="15" selection-end-line="19" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gamelogs/gamelog_no_hayden.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="19" column="1" lean-forward="false" selection-start-line="19" selection-start-column="1" selection-end-line="19" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="378">
@@ -1114,7 +1106,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/EloRatings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
+        <state relative-caret-position="203">
           <caret line="187" column="0" lean-forward="true" selection-start-line="187" selection-start-column="0" selection-end-line="187" selection-end-column="0" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
@@ -1129,6 +1121,22 @@
             <element signature="e#18488#18818#0" expanded="false" />
             <element signature="e#19083#19109#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gamelogs/gamelog_test.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="399">
+          <caret line="19" column="21" lean-forward="false" selection-start-line="19" selection-start-column="21" selection-end-line="19" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gamelogs/gamelog_no_hayden.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="15" column="21" lean-forward="true" selection-start-line="15" selection-start-column="21" selection-end-line="15" selection-end-column="21" />
+          <folding />
         </state>
       </provider>
     </entry>
