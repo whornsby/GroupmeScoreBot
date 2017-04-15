@@ -35,20 +35,22 @@ class Player:
             log.close()
 
     #this only works for 2v2
-    def teamWin(self, otherRating, k=75):
+    def teamWin(self, teammate, loser1, loser2, k=75):
+        otherRating = self.oppTeamRating(teammate,loser1,loser2)
         expected = 1.0 / (1.0 + math.pow(10.0, (otherRating - self.rating) / 400.0))
         self.rating += float(k * (1 - expected))
         self.history.append(int(round(self.rating)))
         self.wins += 1
 
-    def teamLoss(self,otherRating, k=75):
+    def teamLoss(self,teammate,winner1,winner2, k=75):
+        otherRating = self.oppTeamRating(teammate,winner1,winner2)
         expected = 1.0 / (1.0 + math.pow(10.0, (otherRating - self.rating) / 400.0))
         self.rating += float(k * (0 - expected))
         self.history.append(int(round(self.rating)))
         self.losses += 1
 
     def oppTeamRating(self, teammate, opp1, opp2):
-        return opp1.rating + opp2.rating + teammate.rating
+        return (opp1.rating + opp2.rating) - teammate.rating
 
     def whatif(self, other, k=75):
         expected = 1.0 / (1.0 + math.pow(10, (other.rating - self.rating) / 400.0))
@@ -197,11 +199,11 @@ def readMatchesFromFile():
                 loser1 = [p for p in players if p.name == lName1][0]
                 loser2 = [p for p in players if p.name == lName2][0]
 
-                winner1.teamWin(winner1.oppTeamRating(winner2,loser1,loser2),K)
-                winner2.teamWin(winner2.oppTeamRating(winner1,loser1,loser2),K)
+                winner1.teamWin(winner2,loser1,loser2,K)
+                winner2.teamWin(winner1,loser1,loser2,K)
 
-                loser1.teamLoss(loser1.oppTeamRating(loser1,winner1,winner2),K)
-                loser2.teamLoss(loser2.oppTeamRating(loser1,winner1,winner2),K)
+                loser1.teamLoss(loser1,winner1,winner2,K)
+                loser2.teamLoss(loser1,winner1,winner2,K)
             else:
                 wName, x, lName = words
 
@@ -262,6 +264,11 @@ def processTeamFromStrings(winner1, winner2, loser1, loser2):
     loser1 = [p for p in players if p.name == lName1][0]
     loser2 = [p for p in players if p.name == lName2][0]
 
+    wName1 = winner1
+    wName2 = winner2
+    lName1 = loser1
+    lName2 = loser2
+
     winner1.teamWin(wName2, lName1, lName2, K)
     winner2.teamWin(winner1, lName1, lName2, K)
 
@@ -276,7 +283,7 @@ def processTeamFromStrings(winner1, winner2, loser1, loser2):
     # remove 0 at end of file and add new result
     w = open(fileImport, 'w')
     w.writelines([item for item in lines[:-1]])
-    w.write("Team " +wName1+" "+wName2+ " defeats " + lName1 + " " + lName2)
+    w.write("Team " +wName1.name+" "+wName2.name+ " defeats " + lName1.name + " " + lName2.name)
     w.write("\n0")
     w.close()
 

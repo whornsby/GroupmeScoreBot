@@ -4,6 +4,8 @@ Will 1000
 Franklin 1000
 Nathan 1000
 Pop 1000
+Rishi 1000
+Kavish 1000
 0
 William defeats Brian
 Brian defeats Will
@@ -20,4 +22,9 @@ Will defeats William
 William def Franklin
 William def Will
 Will def Brian
+Nathan def Will
+Team Brian William def Nathan Will
+Team Will Brian def Rishi Nathan
+Team William Brian def Nathan Rishi
+Team William Will def Rishi Kavish
 0
