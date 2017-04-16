@@ -73,7 +73,8 @@ class Player:
         return self.rating - other.rating > 0
 
 
-def calculateOutliers(players):
+def calculateOutliers():
+    global players
     npp = np.array([p.rating for p in players])
     q1 = np.percentile(npp, 25)
     q3 = np.percentile(npp, 75)
@@ -436,7 +437,7 @@ def parseCommands():
                 sendMessage("Your command is in the wrong format. \nTry \n$versus [winner] [loser]")
 
         elif string[0] == "$outliers":
-            out = calculateOutliers(players)
+            out = calculateOutliers()
             sendMessage(out)
 
         elif string[0] == "$chance":
@@ -484,7 +485,8 @@ def parseCommands():
         else:
             # message starts with $ but there is not recognized command
             if senderName == "Brian Acosta":
-                sendMessage("Stop fucking with me Brian")
+                sendMessage("Not valid command")
+                #sendMessage("Stop fucking with me Brian")
                 #brian = [p for p in players if p.name == "Brian"][0]
                 #sendMessage("Brian: " + str(brian.rating) + " -> 0")
             else:

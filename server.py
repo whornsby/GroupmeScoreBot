@@ -12,6 +12,7 @@ def index():
     html = open("score.html","r")
     for line in html.readlines():
         s += line
+    s+="\n"+EloRatings.calculateOutliers()
     return s
 
 if __name__ == '__main__':
